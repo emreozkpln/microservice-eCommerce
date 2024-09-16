@@ -21,6 +21,6 @@ public class Product {
     private String description;
     private BigDecimal price;
     private int stock;
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     private List<String> imageUrl;
 }
