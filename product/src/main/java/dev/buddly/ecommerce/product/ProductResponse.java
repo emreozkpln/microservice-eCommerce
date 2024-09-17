@@ -1,8 +1,9 @@
 package dev.buddly.ecommerce.product;
 
+import dev.buddly.ecommerce.review.ReviewResponse;
+
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Map;
 
 public record ProductResponse(
         Integer id,
@@ -10,6 +11,7 @@ public record ProductResponse(
         String description,
         BigDecimal price,
         int stock,
-        List<String> imageUrl
+        List<String> imageUrl,
+        List<ReviewResponse> comments
 ) {
 }

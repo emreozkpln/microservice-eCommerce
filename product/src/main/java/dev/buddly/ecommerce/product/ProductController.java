@@ -33,10 +33,17 @@ public class ProductController {
         return ResponseEntity.ok(productService.createProduct(request));
     }
 
-    @PutMapping("/{productId}/{imageId}")
+    @PutMapping("/image/{productId}/{imageId}")
     public ResponseEntity<Void> addImageToProduct(
             @PathVariable Integer productId, @PathVariable Integer imageId){
         productService.addImageToProduct(productId,imageId);
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/review/{productId}/{reviewId}")
+    public ResponseEntity<Void> addImageToProduct(
+            @PathVariable Integer productId, @PathVariable String reviewId){
+        productService.addReviewToProduct(productId,reviewId);
         return ResponseEntity.ok().build();
     }
 

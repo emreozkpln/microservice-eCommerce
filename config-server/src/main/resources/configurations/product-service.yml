@@ -32,4 +32,5 @@ server:
 application:
   config:
     image-url: http://localhost:8082/v1/image
+    review-url: http://localhost:8084/v1/review
 

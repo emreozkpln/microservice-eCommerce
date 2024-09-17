@@ -3,6 +3,8 @@ package dev.buddly.ecommerce.product;
 import dev.buddly.ecommerce.exception.ProductNotFoundException;
 import dev.buddly.ecommerce.image.ImageClient;
 import dev.buddly.ecommerce.image.ImageResponse;
+import dev.buddly.ecommerce.review.ReviewClient;
+import dev.buddly.ecommerce.review.ReviewResponse;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang.StringUtils;
@@ -24,25 +26,13 @@ public class ProductService {
     private final ProductRepository productRepository;
     private final ProductMapper mapper;
     private final ImageClient client;
+    private final ReviewClient reviewClient;
 
     @Cacheable(value = "products",key = "#root.methodName",unless = "#result==null")// if the incoming data value is null,do not cache it.
     public List<ProductResponse> getAllProducts() {
         return productRepository.findAll()
                 .stream()
-                .map(product -> {
-                    List<String> images = product.getImageUrl()
-                            .stream()
-                            .toList();
-
-                    return new ProductResponse(
-                            product.getId(),
-                            product.getProductName(),
-                            product.getDescription(),
-                            product.getPrice(),
-                            product.getStock(),
-                            images
-                    );
-                })
+                .map(mapper::toResponse)
                 .collect(Collectors.toList());
     }
 
@@ -54,21 +44,11 @@ public class ProductService {
 
     @Cacheable(value = "product_id",key = "#root.methodName + #id",unless = "#result==null")
     public ProductResponse getProductById(Integer id){
-        Product product = productRepository.findById(id)
+        return productRepository.findById(id)
+                .map(mapper::toResponse)
                 .orElseThrow(()-> new ProductNotFoundException(
                         format("Cannot find product:: No product found with the provided ID: %s",id)
                 ));
-        List<String> images = product.getImageUrl()
-                .stream()
-                .toList();
-        return new ProductResponse(
-                product.getId(),
-                product.getProductName(),
-                product.getDescription(),
-                product.getPrice(),
-                product.getStock(),
-                images
-        );
     }
 
     @CachePut(cacheNames = "product_id",key = "'getProductById'+#request.id()",unless = "#result==null")
@@ -90,6 +70,18 @@ public class ProductService {
                 ));
         product.getImageUrl()
                 .add(image);
+        productRepository.save(product);
+    }
+
+    @CacheEvict(value = {"products","product_id"},allEntries = true)
+    public void addReviewToProduct(Integer productId,String reviewId){
+        ReviewResponse review = reviewClient.getReviewById(reviewId);
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new ProductNotFoundException(
+                        format("Cannot update product:: No product found with the provided ID: %s",productId)
+                ));
+        product.getComments()
+                .put(review.comment(),review.rating());
         productRepository.save(product);
     }
 

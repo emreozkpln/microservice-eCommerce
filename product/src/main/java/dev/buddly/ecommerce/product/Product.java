@@ -5,6 +5,7 @@ import lombok.*;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 @Entity
 @Getter
@@ -23,4 +24,6 @@ public class Product {
     private int stock;
     @ElementCollection(fetch = FetchType.EAGER)
     private List<String> imageUrl;
+    @ElementCollection
+    private Map<String,Double> comments;
 }

@@ -14,7 +14,6 @@ public record ProductRequest(
         @NotNull(message = "Price should be not null")
         BigDecimal price,
         @NotNull(message = "Stock should be not null")
-        int stock,
-        List<String> imageId
+        int stock
 ) {
 }
