@@ -29,6 +29,37 @@ services:
       - microservices-net
     restart: unless-stopped
 
+  elasticsearch:
+    container_name: elasticsearch
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.5.3
+    environment:
+      - discovery.type=single-node
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - bootstrap.memory_lock=true
+      - xpack.security.enabled=false
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    volumes:
+      - elasticvolume:/usr/share/elasticsearch/data
+    networks:
+      - microservices-net
+
+  logstash:
+    container_name: logstash
+    image: docker.elastic.co/logstash/logstash:8.5.3
+    ports:
+      - "5044:5044"
+      - "9600:9600"
+    volumes:
+      - ./product/logstash/config/productsync.conf:/usr/share/logstash/config/productsync.conf
+      - ./product/logstash/bin/postgresql.jar:/usr/share/logstash/logstash-core/lib/jars/postgresql.jar
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+    command: logstash -f /usr/share/logstash/config/productsync.conf
+    networks:
+      - microservices-net
+
   mongodb:
     image: mongo
     container_name: mongo_db
@@ -74,3 +105,4 @@ volumes:
   pgadmin:
   mongo:
   redis:
+  elasticvolume:

@@ -1,5 +1,7 @@
 package dev.buddly.ecommerce.product;
 
+import dev.buddly.ecommerce.elasticsearch.ProductDocument;
+import dev.buddly.ecommerce.elasticsearch.SearchRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -19,11 +21,25 @@ public class ProductController {
         return ResponseEntity.ok(productService.getAllProducts());
     }
 
+    @GetMapping("/index/{index}")
+    public ResponseEntity<List<ProductDocument>> getAllIndex(
+            @PathVariable String index
+    ){
+        return ResponseEntity.ok(productService.getAllDataFromIndex(index));
+    }
+
     @GetMapping("/id/{id}")
     public ResponseEntity<ProductResponse> getProductById(
             @PathVariable Integer id
     ){
         return ResponseEntity.ok(productService.getProductById(id));
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<ProductDocument>> searchProductsByFieldAndValue(
+            @RequestBody SearchRequest request
+    ){
+        return ResponseEntity.ok(productService.searchProductsByFieldAndValue(request));
     }
 
     @PostMapping

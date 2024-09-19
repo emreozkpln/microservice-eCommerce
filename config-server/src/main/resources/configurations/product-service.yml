@@ -1,4 +1,8 @@
 spring:
+  elasticsearch:
+    uris: http://localhost:9200
+  main:
+    allow-bean-definition-overriding: true
   datasource:
     username: postgres
     password: 12345
@@ -20,6 +24,9 @@ spring:
           max-wait: -1ms
           max-idle: 8
           min-idle: 8
+    elasticsearch:
+      repositories:
+        enabled: true
   cache:
     type: redis
     redis:
@@ -31,6 +38,7 @@ server:
 
 application:
   config:
+    elasticsearch-url: localhost:9200
     image-url: http://localhost:8082/v1/image
     review-url: http://localhost:8084/v1/review
 

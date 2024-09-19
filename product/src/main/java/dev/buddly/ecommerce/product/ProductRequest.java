@@ -8,7 +8,7 @@ import java.util.List;
 public record ProductRequest(
         Integer id,
         @NotNull(message = "Product name should be not null")
-        String productName,
+        String product_name,
         @NotNull(message = "Description should be not null")
         String description,
         @NotNull(message = "Price should be not null")

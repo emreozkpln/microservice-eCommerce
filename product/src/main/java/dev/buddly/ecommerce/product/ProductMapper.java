@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.List;
+
 @Service
 public class ProductMapper {
     public ProductResponse toResponse(Product product) {
@@ -19,7 +20,7 @@ public class ProductMapper {
 
         return new ProductResponse(
                 product.getId(),
-                product.getProductName(),
+                product.getProduct_name(),
                 product.getDescription(),
                 product.getPrice(),
                 product.getStock(),
@@ -31,7 +32,7 @@ public class ProductMapper {
     public Product toEntity(ProductRequest request){
         return Product.builder()
                 .id(request.id())
-                .productName(request.productName())
+                .product_name(request.product_name())
                 .description(request.description())
                 .price(request.price())
                 .stock(request.stock())
