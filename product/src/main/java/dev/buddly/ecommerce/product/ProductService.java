@@ -1,12 +1,5 @@
 package dev.buddly.ecommerce.product;
 
-import co.elastic.clients.elasticsearch.ElasticsearchClient;
-import co.elastic.clients.elasticsearch._types.query_dsl.Query;
-import co.elastic.clients.elasticsearch.core.SearchResponse;
-import co.elastic.clients.elasticsearch.core.search.Hit;
-import dev.buddly.ecommerce.elasticsearch.EsUtil;
-import dev.buddly.ecommerce.elasticsearch.ProductDocument;
-import dev.buddly.ecommerce.elasticsearch.SearchRequest;
 import dev.buddly.ecommerce.exception.ProductNotFoundException;
 import dev.buddly.ecommerce.image.ImageClient;
 import dev.buddly.ecommerce.review.ReviewClient;
@@ -18,11 +11,8 @@ import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Objects;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import static java.lang.String.format;
@@ -32,7 +22,7 @@ import static java.lang.String.format;
 public class ProductService {
 
     private final ProductRepository productRepository;
-    private final ElasticsearchClient elasticsearchClient;
+
     private final ProductMapper mapper;
     private final ImageClient client;
     private final ReviewClient reviewClient;
@@ -44,20 +34,6 @@ public class ProductService {
                 .map(mapper::toResponse)
                 .collect(Collectors.toList());
     }
-
-    public List<ProductDocument> getAllDataFromIndex(String indexName) {
-        var query = EsUtil.createMatchAllQuery();
-        SearchResponse<ProductDocument> response = null;
-        try {
-            response = elasticsearchClient.search(
-                    q -> q.index(indexName).query(query), ProductDocument.class
-            );
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        return extractAllResponse(response);
-    }
-
 
     @CacheEvict(value = {"products","product_id"},allEntries = true) //when this method runs, clear the products and product_id caches
     public Integer createProduct(ProductRequest request) {
@@ -116,20 +92,6 @@ public class ProductService {
         productRepository.delete(product);
     }
 
-    public List<ProductDocument> searchProductsByFieldAndValue(SearchRequest request) {
-        Supplier<Query> query = EsUtil.buildQueryForFieldAndValue(
-                request.fieldName().get(0),
-                request.searchValue().get(0));
-        SearchResponse<ProductDocument> response = null;
-        try {
-            response = elasticsearchClient.search(
-                    q -> q.index("products_index").query(query.get()), ProductDocument.class);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        return extractAllResponse(response);
-    }
-
     private void mergerProduct(Product product, ProductRequest request) {
         if(StringUtils.isNotBlank(request.product_name())){
             product.setProduct_name(request.product_name());
@@ -145,12 +107,5 @@ public class ProductService {
         }
     }
 
-    private List<ProductDocument> extractAllResponse(SearchResponse<ProductDocument> response){
-        return response
-                .hits()
-                .hits()
-                .stream()
-                .map(Hit::source).filter(Objects::nonNull)
-                .collect(Collectors.toList());
-    }
+
 }
