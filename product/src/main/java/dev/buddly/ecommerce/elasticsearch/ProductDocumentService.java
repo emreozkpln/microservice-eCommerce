@@ -4,7 +4,9 @@ import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import co.elastic.clients.elasticsearch._types.query_dsl.Query;
 import co.elastic.clients.elasticsearch.core.SearchResponse;
 import co.elastic.clients.elasticsearch.core.search.Hit;
+import dev.buddly.ecommerce.exception.ProductNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -13,11 +15,14 @@ import java.util.Objects;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import static java.lang.String.format;
+
 @Service
 @RequiredArgsConstructor
 public class ProductDocumentService {
 
     private final ElasticsearchClient elasticsearchClient;
+    private final ElasticsearchRepository elasticsearchRepository;
 
     public List<ProductDocument> getAllDataFromIndex(String indexName) {
         var query = EsUtil.createMatchAllQuery();
@@ -42,6 +47,10 @@ public class ProductDocumentService {
             throw new RuntimeException(e);
         }
         return extractAllResponse(response);
+    }
+
+    public void deleteProductById(Integer productId){
+        elasticsearchRepository.deleteById(productId);
     }
 
     private List<ProductDocument> extractAllResponse(SearchResponse<ProductDocument> response){

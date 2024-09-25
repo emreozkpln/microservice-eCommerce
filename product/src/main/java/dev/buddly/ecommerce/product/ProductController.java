@@ -78,6 +78,7 @@ public class ProductController {
             @PathVariable("productId") Integer productId
     ){
         productService.deleteProduct(productId);
+        productDocumentService.deleteProductById(productId);
         return ResponseEntity.accepted().build();
     }
 }

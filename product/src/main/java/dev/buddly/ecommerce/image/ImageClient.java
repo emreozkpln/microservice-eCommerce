@@ -1,8 +1,6 @@
 package dev.buddly.ecommerce.image;
 
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
@@ -11,9 +9,8 @@ import org.springframework.web.bind.annotation.PathVariable;
         url = "${application.config.image-url}"
 )
 public interface ImageClient {
-
     @GetMapping("/{imageId}")
-    ResponseEntity<ImageResponse> getImageById(
+    ImageResponse getImageById(
             @PathVariable Integer imageId
     );
 }

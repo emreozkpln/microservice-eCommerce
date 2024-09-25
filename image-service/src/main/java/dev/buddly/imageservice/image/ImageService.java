@@ -46,7 +46,7 @@ public class ImageService {
     public ImageResponse getImageById(Integer imageId) {
         var image = imageRepository.findById(imageId)
                 .orElseThrow(()-> new ImageNotFoundException(
-                        format("Cannot update product:: No product found with the provided ID: %s",imageId)
+                        format("Cannot find image:: No image found with the provided ID: %s",imageId)
                 ));
         return mapper.toResponse(image);
     }

@@ -1,9 +1,6 @@
-package dev.buddly.ecommerce.handler;
+package dev.buddly.imageservice.handler;
 
-import dev.buddly.ecommerce.exception.ExceptionMessage;
-import dev.buddly.ecommerce.exception.ImageNotFoundException;
-import dev.buddly.ecommerce.exception.ProductNotFoundException;
-import dev.buddly.ecommerce.exception.ReviewNotFoundException;
+import dev.buddly.imageservice.exception.ImageNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -16,27 +13,11 @@ import java.util.HashMap;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(ProductNotFoundException.class)
-    public ResponseEntity<String> handle(ProductNotFoundException exp){
+    @ExceptionHandler(ImageNotFoundException.class)
+    public ResponseEntity<String> handle(ImageNotFoundException exp){
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
                 .body(exp.getMsg());
-    }
-
-    @ExceptionHandler(ReviewNotFoundException.class)
-    public ResponseEntity<ExceptionMessage> handle(ReviewNotFoundException exception){
-        return new ResponseEntity<>(
-                exception.getExceptionMessage(),
-                HttpStatus.resolve(exception.getExceptionMessage().status())
-        );
-    }
-
-    @ExceptionHandler(ImageNotFoundException.class)
-    public ResponseEntity<ExceptionMessage> handle(ImageNotFoundException exception){
-        return new ResponseEntity<>(
-                exception.getExceptionMessage(),
-                HttpStatus.resolve(exception.getExceptionMessage().status())
-        );
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

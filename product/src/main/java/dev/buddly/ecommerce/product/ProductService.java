@@ -61,7 +61,7 @@ public class ProductService {
 
     @CacheEvict(value = {"products","product_id"},allEntries = true)
     public void addImageToProduct(Integer productId,Integer imageId){
-        String image = client.getImageById(imageId).getBody().imageUrl();
+        String image = client.getImageById(imageId).imageUrl();
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new ProductNotFoundException(
                         format("Cannot update product:: No product found with the provided ID: %s",productId)
