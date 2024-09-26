@@ -1,0 +1,21 @@
+spring:
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+      routes:
+        - id: image-service
+          uri: lb:http://IMAGE-SERVICE
+          predicates:
+            - Path=/v1/image/**
+        - id: product-service
+          uri: lb:http://PRODUCT-SERVICE
+          predicates:
+            - Path=/v1/product/**
+        - id: review-service
+          uri: lb:http://REVIEW-SERVICE
+          predicates:
+            - Path=/v1/review/**
+server:
+  port: 8222
