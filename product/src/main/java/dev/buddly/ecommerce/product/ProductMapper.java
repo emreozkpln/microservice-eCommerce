@@ -3,6 +3,7 @@ package dev.buddly.ecommerce.product;
 import dev.buddly.ecommerce.review.ReviewResponse;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -36,6 +37,7 @@ public class ProductMapper {
                 .description(request.description())
                 .price(request.price())
                 .stock(request.stock())
+                .imageUrl(new ArrayList<>())
                 .comments(new HashMap<>())
                 .build();
     }

@@ -1,4 +1,7 @@
 spring:
+  sql:
+    init:
+      mode: always
   elasticsearch:
     uris: http://localhost:9200
   main:
